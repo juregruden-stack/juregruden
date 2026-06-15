@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css"/>
+    <title>My Website</title>
+</head>
+<body>
+    <div id="nav"></div>
+    <script>
+    fetch("nav.html")
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById("nav").innerHTML = data;
+        });
+    </script>
+
+    <main class="right-half journal-shell">
+        <section class="card">
+            <h2>Statistični pregled</h2>
+            <div id="stats-grid" class="stats-grid"></div>
+        </section>
+        <section class="card">
+            <h2>Dnevniški vnosi</h2>
+            <ul id="entries-list" class="entries-list"></ul>
+        </section>
+    </main>
+
+    <script>
+        function parseCsv(text) {
+            const lines = text.trim().split(/\r?\n/).filter(Boolean);
+            const headers = (lines[0].match(/(".*?"|[^",]+)(?=,|$)/g) || []).map(item => item.trim().replace(/^"|"$/g, ''));
+            const rows = lines.slice(1).map(row => {
+                const values = row.match(/(".*?"|[^",]+)(?=,|$)/g) || [];
+                const entry = {};
+
+                headers.forEach((header, index) => {
+                    entry[header] = (values[index] || '').trim().replace(/^"|"$/g, '');
+                });
+
+                return entry;
+            });
+
+            return { headers, rows };
+        }
+
+        function getStatKeys(headers) {
+            return headers.filter(header => header.toLowerCase() !== 'text' && header.toLowerCase() !== 'date');
+        }
+
+        function renderStats(rows, headers) {
+            const statKeys = getStatKeys(headers);
+            const stats = Object.fromEntries(statKeys.map(key => [key, 0]));
+
+            rows.forEach(entry => {
+                statKeys.forEach(key => {
+                    stats[key] += Number(entry[key]) || 0;
+                });
+            });
+
+            const statsGrid = document.getElementById('stats-grid');
+
+            statsGrid.innerHTML = statKeys.map(key => `
+                <article class="stat-card">
+                    <span class="stat-label">${key}</span>
+                    <id class="stat-value">${stats[key] || 0}</id>
+                </article>
+            `).join('');
+        }
+
+        function renderEntries(rows, headers) {
+            const entriesList = document.getElementById('entries-list');
+            const statKeys = getStatKeys(headers);
+
+            if (!rows.length) {
+                entriesList.innerHTML = '<li class="empty-state">Ni vnosa v CSV datoteki.</li>';
+                return;
+            }
+
+            entriesList.innerHTML = rows
+                .map(entry => {
+                    const boosts = statKeys
+                        .filter(key => Number(entry[key]) > 0)
+                        .map(key => `${key} +${entry[key]}`);
+
+                    const dateLabel = entry.date ? `<div class="entry-date">${entry.date}</div>` : '';
+
+                    return `
+                        <li class="entry-card">
+                            ${dateLabel}
+                            <p class="entry-text">${entry.text}</p>
+                            <div class="entry-meta">${boosts.length ? boosts.join(', ') : 'brez povečanja'}</div>
+                        </li>
+                    `;
+                })
+                .join('');
+        }
+
+        fetch('diary-entries.csv')
+            .then(response => response.text())
+            .then(text => {
+                const { headers, rows } = parseCsv(text);
+                renderStats(rows, headers);
+                renderEntries(rows, headers);
+            })
+            .catch(() => {
+                document.getElementById('stats-grid').innerHTML = '<p class="empty-state">CSV datoteka ni bila naložena.</p>';
+                document.getElementById('entries-list').innerHTML = '<li class="empty-state">Preveri, ali je diary-entries.csv prisoten v mapi.</li>';
+            });
+    </script>
+</body>
+</html>

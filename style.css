@@ -1,0 +1,58 @@
+body {
+  margin-top: 150px;
+  background: #fcfbf8;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.left-half {
+  position: absolute;
+  left: -1%;
+  width: 20%;
+  text-align: right;
+}
+
+.right-half {
+  position: absolute;
+  right: -1%;
+  width: 80%;
+}
+
+.entries-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+
+
+
+.photo-card {
+  display: inline-block;
+  width: 220px;
+  margin: 5px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.photo-card img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid black;
+}
+
+.photo-card figcaption {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 10px;
+  margin-top: 5px;
+  text-align: left;
+}
