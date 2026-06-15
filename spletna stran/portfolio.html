@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css"/>
+    <title>My Website</title>
+</head>
+<body>
+    <div id="nav"></div>
+    <script>
+    fetch("nav.html")
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById("nav").innerHTML = data;
+        });
+    </script>
+    <div class="right-half">
+        <p>Tukaj bo moj portfolio.</p>
+        <figure class="photo-card">
+            <a href="project_1.html">
+                <img src="image_1.jpg" alt="project 1" style="width: 200px; height: 200px; border:1px solid black; object-fit: cover;">
+            </a>
+            <figcaption>Project 1</figcaption>
+        </figure>
+        <figure class="photo-card">
+        <a href="project_1.html">
+            <img src="image_1.jpg" alt="project 1" style="width: 200px; height: 200px; border:1px solid black; object-fit: cover;">
+        </a>
+        <figcaption>Project 2</figcaption>
+        </figure>
+        <figure class="photo-card">
+        <a href="project_1.html">
+            <img src="image_1.jpg" alt="project 1" style="width: 200px; height: 200px; border:1px solid black; object-fit: cover;">
+        </a>
+        <figcaption>Project 3</figcaption>
+        </figure>
+        <figure class="photo-card">
+        <a href="project_1.html">
+            <img src="image_1.jpg" alt="project 1" style="width: 200px; height: 200px; border:1px solid black; object-fit: cover;">
+        </a>
+        <figcaption>Project 4</figcaption>
+        </figure>
+    </div>
+</body>
+</html>
